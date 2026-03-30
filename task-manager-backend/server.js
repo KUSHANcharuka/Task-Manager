@@ -1,6 +1,8 @@
 // backend/server.js
 const express = require("express");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -20,11 +22,22 @@ mongoose
 const taskRoutes = require("./routes/taskRoutes");
 app.use("/tasks", taskRoutes);
 
-// Default route (optional)
+// Default route
 app.get("/", (req, res) => {
   res.send("Backend is running");
 });
 
+const users = [];
+
+// signup route
+const auth = require("./routes/auth");
+app.use("/api", auth);
+
+// login route
+const authRoutes = require("./routes/auth");
+app.use("/api", authRoutes);
+
+//port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

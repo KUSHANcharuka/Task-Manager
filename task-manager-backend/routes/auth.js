@@ -1,44 +1,60 @@
-const router = require("express").Router();
+const express = require("express");
+const router = express.Router();
 const User = require("../models/User");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-// REGISTER API
-router.post("/register", async (req, res) => {
+router.post("/signup", async (req, res) => {
   try {
-    // 1. Create new user
+    const { username, email, password } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = new User({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
+      username,
+      email,
+      password: hashedPassword,
     });
 
-    // 2. Save to MongoDB
-    const user = await newUser.save();
-    res.status(200).json(user);
+    await newUser.save();
+
+    res.status(201).json({ message: "User created successfully!" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({
-      error: "Error creating user. Username or Email might be taken.",
-    });
+    res.status(500).json({ message: "Server error during signup" });
   }
 });
 
-// LOGIN API
 router.post("/login", async (req, res) => {
   try {
-    // 1. Find user
-    const user = await User.findOne({ username: req.body.username });
-    if (!user) return res.status(404).json("User not found!");
+    const { email, password } = req.body;
 
-    // 2. Check password (Simple check for demo; use bcrypt in production)
-    if (user.password !== req.body.password) {
-      return res.status(400).json("Wrong password!");
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // 3. Return user info
-    const { password, ...others } = user._doc;
-    res.status(200).json(others);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      "secretkey",
+      { expiresIn: "1h" }
+    );
+
+    res.json({ token, username: user.username });
   } catch (err) {
-    res.status(500).json(err);
+    console.error(err);
+    res.status(500).json({ message: "Server error during login" });
   }
 });
 
