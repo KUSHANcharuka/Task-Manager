@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = ({ onSwitchToLogin }) => {
   const [formData, setFormData] = useState({
@@ -6,9 +7,16 @@ const SignUp = ({ onSwitchToLogin }) => {
     email: "",
     password: "",
   });
+
+  const goToLogIn = () => {
+    navigate("/");
+  };
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,116 +26,111 @@ const SignUp = ({ onSwitchToLogin }) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
-      const res = await fetch("http://localhost:5000/auth/register", {
+      const response = await fetch("http://localhost:5000/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
-
-      if (res.status === 200) {
+      const data = await response.json();
+      if (response.ok) {
         setSuccess(true);
-        setTimeout(() => {
-          onSwitchToLogin(); // Redirect to login after 1.5s
-        }, 1500);
+        setTimeout(() => navigate("/"), 2000);
       } else {
-        setError(data.error || "Registration failed");
+        setError(data.message || "Signup failed");
       }
     } catch (err) {
-      setError("Server offline");
+      setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden selection:bg-cyan-100">
-      {/* Decorative Background Elements */}
-      <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-[#00D4FF]/20 rounded-full blur-3xl mix-blend-multiply animate-pulse"></div>
-      <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-purple-400/20 rounded-full blur-3xl mix-blend-multiply animate-pulse delay-700"></div>
+    <div className="min-h-screen bg-[#F8FBFB] p-6 font-sans">
+      <div className="max-w-6xl mx-auto flex justify-between items-center mb-12">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-8 bg-[#00E0FF] rounded-full"></div>
+          <h1 className="text-2xl font-bold text-[#0D323E]">Task Manager</h1>
+        </div>
+      </div>
 
-      <div className="bg-white/80 backdrop-blur-xl border border-white/50 shadow-2xl rounded-3xl p-8 md:p-12 w-full max-w-md relative z-10">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-black italic text-slate-800 mb-2">
-            Create Account
-          </h1>
-          <p className="text-slate-500">Join us to organize your tasks!</p>
+      <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h2 className="text-7xl font-black text-[#0D323E] leading-none">
+            Join
+          </h2>
+          <div className="flex items-center gap-4 mt-2">
+            <h2 className="text-5xl font-bold text-[#00E0FF]">Us</h2>
+            <div className="h-1 w-20 bg-gray-200"></div>
+          </div>
+          <p className="text-gray-400 mt-4 text-lg">
+            Create an account to manage your tasks.
+          </p>
         </div>
 
-        {success ? (
-          <div className="p-4 bg-green-100 text-green-700 rounded-xl text-center font-bold animate-pulse">
-            ✅ Account Created! Redirecting...
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {error && (
-              <div className="p-3 bg-red-100 text-red-600 text-sm rounded-lg text-center">
-                {error}
-              </div>
-            )}
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+          <h3 className="text-2xl font-bold text-[#0D323E] mb-6">Sign Up</h3>
 
-            <div className="space-y-1">
-              <label className="text-xs font-bold uppercase text-slate-400 tracking-wider ml-1">
-                Username
-              </label>
-              <input
-                type="text"
-                name="username"
-                onChange={handleChange}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]"
-                required
-              />
-            </div>
+          {error && (
+            <p className="mb-4 text-red-500 text-sm bg-red-50 p-2 rounded">
+              {error}
+            </p>
+          )}
+          {success && (
+            <p className="mb-4 text-green-500 text-sm bg-green-50 p-2 rounded">
+              Registraion Successful!...
+            </p>
+          )}
 
-            <div className="space-y-1">
-              <label className="text-xs font-bold uppercase text-slate-400 tracking-wider ml-1">
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                onChange={handleChange}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]"
-                required
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-bold uppercase text-slate-400 tracking-wider ml-1">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                onChange={handleChange}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]"
-                required
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              className="w-full px-6 py-3 rounded-full bg-gray-50 border border-transparent focus:border-[#00E0FF] outline-none transition"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              className="w-full px-6 py-3 rounded-full bg-gray-50 border border-transparent focus:border-[#00E0FF] outline-none transition"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              className="w-full px-6 py-3 rounded-full bg-gray-50 border border-transparent focus:border-[#00E0FF] outline-none transition"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#00D4FF] hover:bg-[#00bce3] text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-200 transition-all hover:-translate-y-1"
+              className="w-full bg-[#00E0FF] hover:bg-[#00c6e0] text-white font-bold py-3 rounded-2xl shadow-lg shadow-cyan-100 transition flex justify-center items-center"
             >
-              {loading ? "Creating..." : "Sign Up"}
+              {loading ? "Processing..." : "+ Create Account"}
             </button>
           </form>
-        )}
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-slate-400">
+          <button
+            onClick={onSwitchToLogin}
+            className="w-full mt-6 text-sm text-gray-500 hover:text-[#0D323E] transition"
+          >
             Already have an account?{" "}
-            <button
-              onClick={onSwitchToLogin}
-              className="text-[#00D4FF] font-bold hover:underline"
-            >
-              Log In
-            </button>
-          </p>
+            <span className="font-bold text-[#00E0FF]" onClick={goToLogIn}>
+              Login
+            </span>
+          </button>
         </div>
       </div>
     </div>

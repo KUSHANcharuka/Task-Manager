@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // 1. Axios Import කළා
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Calendar from "./Calendar";
 import AddTask from "./AddTask";
-import SearchBar from "./SearchBar";
+import TaskResults from "./TaskResults";
 
-const TaskManager = ({ user, onLogout }) => {
+const TaskManager = ({ user: userProp }) => {
+  const navigate = useNavigate();
   const now = new Date();
+  const [username, setUsername] = useState(
+    userProp || localStorage.getItem("username") || "Guest"
+  );
   const [addtask, setShowaddtask] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    return saved === "true";
+  });
 
-  // 2. tasks State එක හැදුවා (නැත්නම් setTasks වැඩ කරන්නේ නෑ)
   const [tasks, setTasks] = useState([]);
-  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [query, setQuery] = useState("");
+  const [showResults, setShowResults] = useState(false);
 
-  // 3. Theme Object
   const theme = {
     container: darkMode
       ? "bg-slate-950 text-slate-100"
@@ -24,15 +31,13 @@ const TaskManager = ({ user, onLogout }) => {
       ? "bg-slate-900 border-slate-800 shadow-black/50"
       : "bg-white border-slate-100 shadow-slate-200/50",
     input: darkMode
-      ? "bg-slate-900 border-slate-800 text-slate-200 placeholder-slate-600"
-      : "bg-white border-slate-200 text-slate-700",
+      ? "w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00D4FF] transition-all bg-slate-800 border-slate-700 text-slate-100 placeholder-slate-500 focus:bg-slate-900"
+      : "w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00D4FF] transition-all bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:bg-white",
     dateText: darkMode ? "text-slate-700" : "text-slate-300",
   };
 
-  // 4. Tasks Fetch කරන function එක
   const fetchTasks = async () => {
     try {
-      // Backend එක run වෙන්නේ port 5000 න් බව තහවුරු කරගන්න
       const response = await axios.get("http://localhost:5000/tasks");
       setTasks(response.data);
     } catch (error) {
@@ -40,28 +45,38 @@ const TaskManager = ({ user, onLogout }) => {
     }
   };
 
-  // 5. Search Function එක
-  const handleSearch = async (query) => {
+  const handleSearch = async () => {
+    if (!query.trim()) {
+      console.log("Search query is empty");
+      return;
+    }
+
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/tasks/search?title=${query}`
-      );
-      setFilteredTasks(res.data);
-    } catch (error) {
-      console.error("Search failed:", error);
+      const res = await axios.get("http://localhost:5000/tasks/search", {
+        params: { q: query },
+      });
+      setTasks(res.data);
+      setShowResults(true);
+    } catch (err) {
+      console.error("Search error:", err);
     }
   };
 
-  // 6. මුලින්ම page එක load වෙද්දි tasks ගන්න
   useEffect(() => {
     fetchTasks();
-  }, []);
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
+
+  const handleLogout = () => {
+    navigate("/");
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+  };
 
   return (
     <div
       className={`min-h-screen font-sans selection:bg-cyan-100 transition-colors duration-300 ${theme.container}`}
     >
-      {/* Header */}
       <header className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
@@ -105,7 +120,7 @@ const TaskManager = ({ user, onLogout }) => {
                 <h1
                   className={`text-lg font-bold leading-none ${theme.headerText}`}
                 >
-                  {user || "User"}
+                  {username}
                 </h1>
               </div>
               <div
@@ -120,7 +135,7 @@ const TaskManager = ({ user, onLogout }) => {
             </div>
 
             <button
-              onClick={onLogout}
+              onClick={handleLogout}
               className={`h-10 w-10 rounded-full border transition-all flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 hover:border-red-100 ${
                 darkMode
                   ? "bg-slate-900 border-slate-800 hover:bg-red-900/20 hover:border-red-900/50"
@@ -134,7 +149,6 @@ const TaskManager = ({ user, onLogout }) => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 pb-10">
         <div className="grid lg:grid-cols-3 gap-8 mb-8 items-end">
           <div className="lg:col-span-2">
@@ -162,10 +176,24 @@ const TaskManager = ({ user, onLogout }) => {
               </div>
             </section>
           </div>
-          <div className="flex flex-col sm:flex-row gap-4 lg:justify-end w-full">
-            <div className="relative group flex-grow sm:flex-grow-0 sm:w-64">
-              {/* SearchBar එකට onSearch function එක pass කළා */}
-              <SearchBar isDark={darkMode} onSearch={handleSearch} />
+          <div className="flex items-center gap-3 w-full mb-5">
+            <div className="flex-1">
+              <input
+                type="text"
+                name="search"
+                placeholder="Search by title..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                required
+                className={theme.input}
+              />
+
+              <button
+                onClick={handleSearch}
+                className="bg-[#00D4FF] hover:bg-[#00bce3] text-white text-lg font-bold rounded-2xl px-6 py-3 shadow-lg shadow-cyan-200/50 hover:shadow-cyan-300/50 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+              >
+                <span>Search</span>
+              </button>
             </div>
 
             <button
@@ -177,7 +205,6 @@ const TaskManager = ({ user, onLogout }) => {
           </div>
         </div>
 
-        {/* Calendar Container */}
         <div
           className={`rounded-[2rem] shadow-xl border p-4 sm:p-8 relative overflow-hidden transition-all ${theme.card}`}
         >
@@ -189,7 +216,6 @@ const TaskManager = ({ user, onLogout }) => {
             }`}
           ></div>
           <div className="relative z-10">
-            {/* Calendar එකට tasks ටික යවනවා */}
             <Calendar isDark={darkMode} tasks={tasks} />
           </div>
         </div>
@@ -201,11 +227,20 @@ const TaskManager = ({ user, onLogout }) => {
             darkMode ? "bg-slate-950/60" : "bg-slate-900/20"
           }`}
         >
-          {/* AddTask එකෙන් පස්සේ refresh වෙන්න function එක යවනවා */}
           <AddTask
             onClose={() => setShowaddtask(false)}
             isDark={darkMode}
             refreshTasks={fetchTasks}
+          />
+        </div>
+      )}
+
+      {showResults && (
+        <div>
+          <TaskResults
+            tasks={tasks}
+            onClose={() => setShowResults(false)}
+            isDark={darkMode}
           />
         </div>
       )}

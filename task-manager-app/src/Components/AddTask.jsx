@@ -83,7 +83,7 @@ function AddTask({ onClose, isDark }) {
                   name="task"
                   value={formData.task}
                   onChange={handleChange}
-                  placeholder="e.g., Project Review"
+                  placeholder="Enter Task Title"
                   required
                   className={inputClass}
                 />
