@@ -7,7 +7,14 @@ const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
+
+// Middleware
+app.use(
+  cors({
+    origin: "*",
+    credentials: false,
+  }),
+);
 app.use(express.json());
 
 // MongoDB Connect
