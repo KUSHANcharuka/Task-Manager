@@ -9,9 +9,16 @@ require("dotenv").config();
 const app = express();
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173", // No trailing slash!
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
-app.options("*", cors());
+app.options("(.*)", cors());
 
 // MongoDB Connect
 mongoose
