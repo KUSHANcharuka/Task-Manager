@@ -7,12 +7,31 @@ require("dotenv").config();
 const app = express();
 
 // Middleware
-app.use(
-  cors({
-    origin: "*",
-    credentials: false,
-  }),
-);
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://task-manager-back-theta.vercel.app",
+];
+
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow tools like Postman/cURL that may not send an Origin header.
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: false,
+};
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 app.use(express.json());
 
 // MongoDB Connect
