@@ -10,14 +10,24 @@ function AddTask({ onClose, isDark }) {
     endTime: "",
   });
 
+  const token = localStorage.getItem("token");
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!token) {
+      console.error("User not authenticated");
+      return;
+    }
+
     fetch(`${API_BASE_URL}/tasks/add`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(formData),
     })
       .then((res) => res.json())

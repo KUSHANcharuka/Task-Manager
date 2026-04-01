@@ -2,6 +2,24 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config/api";
 
+// Decode JWT token to extract userId
+const decodeToken = (token) => {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(""),
+    );
+    return JSON.parse(jsonPayload);
+  } catch (err) {
+    console.error("Token decode error:", err);
+    return null;
+  }
+};
+
 const Login = ({ onSwitchToSignUp }) => {
   const [formData, setFormData] = useState({
     email: "",
@@ -36,6 +54,13 @@ const Login = ({ onSwitchToSignUp }) => {
       if (response.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("username", data.username);
+
+        // Decode token to get userId
+        const decodedToken = decodeToken(data.token);
+        if (decodedToken && decodedToken.userId) {
+          localStorage.setItem("userId", decodedToken.userId);
+        }
+
         navigate("/dashboard");
       } else {
         setError(data.message || "Login failed. Check your credentials.");

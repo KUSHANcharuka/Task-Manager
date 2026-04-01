@@ -12,6 +12,7 @@ const TaskManager = ({ user: userProp }) => {
   const [username, setUsername] = useState(
     userProp || localStorage.getItem("username") || "Guest",
   );
+  const token = localStorage.getItem("token");
   const [addtask, setShowaddtask] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("darkMode");
@@ -39,7 +40,10 @@ const TaskManager = ({ user: userProp }) => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/tasks`);
+      if (!token) return;
+      const response = await axios.get(`${API_BASE_URL}/tasks`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -53,8 +57,10 @@ const TaskManager = ({ user: userProp }) => {
     }
 
     try {
+      if (!token) return;
       const res = await axios.get(`${API_BASE_URL}/tasks/search`, {
         params: { q: query },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(res.data);
       setShowResults(true);
@@ -66,12 +72,13 @@ const TaskManager = ({ user: userProp }) => {
   useEffect(() => {
     fetchTasks();
     localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
+  }, [darkMode, token]);
 
   const handleLogout = () => {
     navigate("/");
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+    localStorage.removeItem("userId");
   };
 
   return (

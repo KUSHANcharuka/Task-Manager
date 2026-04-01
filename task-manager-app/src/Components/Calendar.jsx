@@ -27,10 +27,18 @@ const Calendar = ({ isDark }) => {
   const [editTaskId, setEditTaskId] = useState(null);
   const [editFields, setEditFields] = useState({});
   const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
-    fetch(`${API_BASE_URL}/tasks`)
+    fetch(`${API_BASE_URL}/tasks`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => res.json())
       .then((data) => {
         setTasks(data);
@@ -58,7 +66,7 @@ const Calendar = ({ isDark }) => {
         ]);
         setLoading(false);
       });
-  }, []);
+  }, [token]);
 
   const getWeekDates = () =>
     Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
@@ -70,9 +78,10 @@ const Calendar = ({ isDark }) => {
   const handleDelete = (id) => {
     const previousTasks = [...tasks];
     setTasks((prev) => prev.filter((t) => t._id !== id));
-    fetch(`${API_BASE_URL}/tasks/${id}`, { method: "DELETE" }).catch((err) =>
-      setTasks(previousTasks),
-    );
+    fetch(`${API_BASE_URL}/tasks/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    }).catch((err) => setTasks(previousTasks));
   };
 
   const handleUpdate = (id) => {
@@ -85,7 +94,10 @@ const Calendar = ({ isDark }) => {
 
     fetch(`${API_BASE_URL}/tasks/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(editFields),
     }).catch((err) => setTasks(previousTasks));
   };
