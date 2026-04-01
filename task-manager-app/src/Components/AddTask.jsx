@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 function AddTask({ onClose, isDark }) {
   const [formData, setFormData] = useState({
     task: "",
@@ -16,7 +14,7 @@ function AddTask({ onClose, isDark }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch(`${API_BASE_URL}/tasks/add`, {
+    fetch("http://localhost:5000/tasks/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),

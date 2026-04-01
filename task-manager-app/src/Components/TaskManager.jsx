@@ -5,13 +5,11 @@ import Calendar from "./Calendar";
 import AddTask from "./AddTask";
 import TaskResults from "./TaskResults";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 const TaskManager = ({ user: userProp }) => {
   const navigate = useNavigate();
   const now = new Date();
   const [username, setUsername] = useState(
-    userProp || localStorage.getItem("username") || "Guest",
+    userProp || localStorage.getItem("username") || "Guest"
   );
   const [addtask, setShowaddtask] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
@@ -40,7 +38,7 @@ const TaskManager = ({ user: userProp }) => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/tasks`);
+      const response = await axios.get("http://localhost:5000/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -54,7 +52,7 @@ const TaskManager = ({ user: userProp }) => {
     }
 
     try {
-      const res = await axios.get(`${API_BASE_URL}/tasks/search`, {
+      const res = await axios.get("http://localhost:5000/tasks/search", {
         params: { q: query },
       });
       setTasks(res.data);
