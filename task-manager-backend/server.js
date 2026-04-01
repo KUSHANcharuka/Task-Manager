@@ -1,8 +1,6 @@
 // backend/server.js
 const express = require("express");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -19,10 +17,7 @@ app.use(express.json());
 
 // MongoDB Connect
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Error:", err));
 
@@ -34,18 +29,16 @@ app.get("/", (req, res) => {
   res.send("Backend is running");
 });
 
-const users = [];
-
-// signup route
 const auth = require("./routes/auth");
 app.use("/api", auth);
 
-// login route
-const authRoutes = require("./routes/auth");
-app.use("/api", authRoutes);
+const PORT = process.env.PORT || 5000;
 
-//port
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
+// Start a local server only outside Vercel serverless runtime.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
