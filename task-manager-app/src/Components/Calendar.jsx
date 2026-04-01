@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 const formatDateISO = (date) => {
   const d = new Date(date);
   const offset = d.getTimezoneOffset();
@@ -29,10 +27,9 @@ const Calendar = ({ isDark }) => {
   const [editFields, setEditFields] = useState({});
   const [loading, setLoading] = useState(true);
 
-  // Fetch Tasks
   useEffect(() => {
     setLoading(true);
-    fetch(`${API_BASE_URL}/tasks`)
+    fetch("http://localhost:5000/tasks")
       .then((res) => res.json())
       .then((data) => {
         setTasks(data);
@@ -72,8 +69,8 @@ const Calendar = ({ isDark }) => {
   const handleDelete = (id) => {
     const previousTasks = [...tasks];
     setTasks((prev) => prev.filter((t) => t._id !== id));
-    fetch(`${API_BASE_URL}/tasks/${id}`, { method: "DELETE" }).catch((err) =>
-      setTasks(previousTasks),
+    fetch(`http://localhost:5000/tasks/${id}`, { method: "DELETE" }).catch(
+      (err) => setTasks(previousTasks)
     );
   };
 
@@ -85,14 +82,13 @@ const Calendar = ({ isDark }) => {
     setEditTaskId(null);
     setEditFields({});
 
-    fetch(`${API_BASE_URL}/tasks/${id}`, {
+    fetch(`http://localhost:5000/tasks/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editFields),
     }).catch((err) => setTasks(previousTasks));
   };
 
-  // Theme Classes
   const textMain = isDark ? "text-white" : "text-slate-800";
   const textSub = isDark ? "text-slate-400" : "text-slate-500";
   const cardBg = isDark
@@ -106,7 +102,6 @@ const Calendar = ({ isDark }) => {
 
   return (
     <div className="w-full">
-      {/* Navigation Header */}
       <div className="flex justify-between items-center mb-6 px-2">
         <button
           onClick={handlePrev}
@@ -139,7 +134,6 @@ const Calendar = ({ isDark }) => {
         </button>
       </div>
 
-      {/* Week Grid */}
       <div className="grid grid-cols-7 gap-2 mb-8">
         {getWeekDates().map((date, idx) => {
           const dateStr = formatDateISO(date);
@@ -154,8 +148,8 @@ const Calendar = ({ isDark }) => {
                 isSelected
                   ? "bg-[#00D4FF] border-[#00D4FF] text-white shadow-lg shadow-cyan-200/50 dark:shadow-none transform -translate-y-1"
                   : isDark
-                    ? "bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700"
-                    : "bg-slate-50 border-slate-100 text-slate-500 hover:bg-white hover:shadow-md"
+                  ? "bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700"
+                  : "bg-slate-50 border-slate-100 text-slate-500 hover:bg-white hover:shadow-md"
               }`}
             >
               <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-70 mb-1">
@@ -172,7 +166,6 @@ const Calendar = ({ isDark }) => {
         })}
       </div>
 
-      {/* Task List Section */}
       <div className="animate-fade-in min-h-[200px]">
         <h3
           className={`text-lg font-bold mb-4 flex items-center gap-2 ${textSub}`}
