@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/api";
 
 const SignUp = ({ onSwitchToLogin }) => {
   const [formData, setFormData] = useState({
@@ -27,7 +28,7 @@ const SignUp = ({ onSwitchToLogin }) => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch("http://localhost:5000/api/signup", {
+      const response = await fetch(`${API_BASE_URL}/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

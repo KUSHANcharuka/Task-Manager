@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_BASE_URL } from "../config/api";
 
 function AddTask({ onClose, isDark }) {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ function AddTask({ onClose, isDark }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("http://localhost:5000/tasks/add", {
+    fetch(`${API_BASE_URL}/tasks/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
