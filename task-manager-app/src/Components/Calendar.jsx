@@ -20,7 +20,7 @@ const subDays = (date, days) => {
   return result;
 };
 
-const Calendar = ({ isDark }) => {
+const Calendar = ({ isDark, tasks: externalTasks }) => {
   const [startDate, setStartDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(formatDateISO(new Date()));
   const [tasks, setTasks] = useState([]);
@@ -28,6 +28,12 @@ const Calendar = ({ isDark }) => {
   const [editFields, setEditFields] = useState({});
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (Array.isArray(externalTasks)) {
+      setTasks(externalTasks);
+    }
+  }, [externalTasks]);
 
   useEffect(() => {
     if (!token) {

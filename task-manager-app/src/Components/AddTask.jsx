@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { API_BASE_URL } from "../config/api";
 
-function AddTask({ onClose, isDark }) {
+function AddTask({ onClose, isDark, refreshTasks }) {
   const [formData, setFormData] = useState({
     task: "",
     description: "",
@@ -33,6 +33,9 @@ function AddTask({ onClose, isDark }) {
       .then((res) => res.json())
       .then((data) => {
         console.log("Task added:", data);
+        if (typeof refreshTasks === "function") {
+          refreshTasks();
+        }
         onClose();
       })
       .catch((err) => console.error("Error:", err));
