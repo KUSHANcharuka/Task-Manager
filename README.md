@@ -15,7 +15,7 @@ A high-performance, full-stack Task Management system. This application provides
 
   * **Secure Authentication:** User registration and login powered by **JSON Web Tokens (JWT)** and password hashing via Bcrypt.
   * **Full CRUD Functionality:** Create, Read, Update, and Delete tasks with real-time UI updates.
-  * **Dynamic Dashboard:** View task progress and categorize items by status (To-Do, In Progress, Done).
+  * **Dynamic Dashboard:** View tasks in real time.
   * **Responsive UI:** Fully optimized for mobile, tablet, and desktop views.
   * **Protected Routes:** Frontend and backend security to ensure only authorized users access their data.
 
