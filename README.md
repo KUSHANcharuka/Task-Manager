@@ -1,62 +1,61 @@
-📝 Task Manager | MERN Stack Application
-A robust, full-stack Task Management system designed to streamline productivity. This application allows users to manage their daily workflows with a secure, responsive, and intuitive interface.
+# 📝 Task Manager | MERN Stack Application
 
-🌟 Key Features
-Secure Authentication: User registration and login powered by JSON Web Tokens (JWT) and password hashing.
+**Efficiently organize and complete your tasks.**
 
-State Management: Efficient data handling using React Hooks (and/or Redux).
+[](https://task-manager-front-azure-beta.vercel.app/)
 
-RESTful API: A clean backend architecture for handling Task CRUD operations.
+A high-performance, full-stack Task Management system. This application provides a seamless user experience for managing daily workflows, featuring secure authentication and a responsive dashboard.
 
-Dynamic UI: Responsive design that scales from mobile devices to desktop monitors.
+## 🔗 Quick Links
 
-🚀 Technical Architecture
-This project is built using the MERN stack for high performance and scalability:
+  * **Live Demo:** [task-manager.com](https://task-manager-front-azure-beta.vercel.app/)
+  * **Backend Repository:** [GitHub Link](https://www.google.com/search?q=https://github.com/KUSHANcharuka/Task-Manager)
 
-Frontend: React.js, Axios, Tailwind CSS
+## 🌟 Key Features
 
-Backend: Node.js, Express.js
+  * **Secure Authentication:** User registration and login powered by **JSON Web Tokens (JWT)** and password hashing via Bcrypt.
+  * **Full CRUD Functionality:** Create, Read, Update, and Delete tasks with real-time UI updates.
+  * **Dynamic Dashboard:** View task progress and categorize items by status (To-Do, In Progress, Done).
+  * **Responsive UI:** Fully optimized for mobile, tablet, and desktop views.
+  * **Protected Routes:** Frontend and backend security to ensure only authorized users access their data.
 
-Database: MongoDB Atlas (NoSQL)
+## 🚀 Technical Architecture
 
-Security: Bcrypt.js for encryption, JWT for authorization
+  * **Frontend:** React.js, Tailwind CSS, Axios
+  * **Backend:** Node.js, Express.js
+  * **Authentication:** JSON Web Tokens (JWT) & Bcrypt password hashing
+  * **Database:** MongoDB Atlas
+  * **Deployment:** Vercel (Full Stack)
 
-🛠️ Installation & Setup
-To get a local copy up and running, follow these steps:
 
-1. Prerequisites
-npm (Node Package Manager)
+## 🛠️ Installation & Setup
 
-A MongoDB Atlas account or local MongoDB instance
+1.  **Clone the Repository:**
 
-2. Clone the Repository
-Bash
-git clone https://github.com/KUSHANcharuka/Task-Manager.git
-cd Task-Manager
-3. Environment Variables
-Create a .env file in the root of the backend directory and add the following:
+    ```bash
+    git clone https://github.com/KUSHANcharuka/Task-Manager.git
+    cd Task-Manager
+    ```
 
-Code snippet
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+2.  **Setup Backend:**
 
-4. Install Dependencies & Run
-For the Backend:
+      * Navigate to `/backend`, run `npm install`.
+      * Create a `.env` file:
+        ```env
+        PORT=5000
+        MONGO_URI=your_mongodb_connection_string
+        JWT_SECRET=your_secret_key
+        ```
+      * Run `npm start`.
 
-Bash
-cd backend
-npm install
-npm start
-For the Frontend:
+3.  **Setup Frontend:**
 
-Bash
-cd frontend
-npm install
-npm start
+      * Navigate to `/frontend`, run `npm install`.
+      * Run `npm start`.
 
-📂 Project Structure
-Plaintext
+## 📂 Project Structure
+
+```text
 ├── backend/
 │   ├── controllers/   # Business logic for routes
 │   ├── models/        # MongoDB schemas (User, Task)
@@ -68,6 +67,10 @@ Plaintext
 │   │   ├── pages/      # View layouts (Login, Dashboard)
 │   │   └── context/    # Global state management
 └── README.md
+```
+## 📧 Contact
 
-📧 Contact
-K.A. Kushan Charuka Kumarasiri GitHub | LinkedIn
+**K.A. Kushan Charuka Kumarasiri** Computer Science Student @ Saegis Campus  
+[GitHub](https://github.com/KUSHANcharuka) | [LinkedIn](https://www.linkedin.com/in/kushan-charuka/)
+
+-----
