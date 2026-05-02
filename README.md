@@ -8,69 +8,103 @@ A high-performance, full-stack Task Management system. This application provides
 
 ## 🔗 Quick Links
 
-  * **Live Demo:** [task-manager.com](https://task-manager-front-azure-beta.vercel.app/)
-  * **Backend Repository:** [GitHub Link](https://www.google.com/search?q=https://github.com/KUSHANcharuka/Task-Manager)
+- **Live Demo:** [task-manager.com](https://task-manager-front-azure-beta.vercel.app/)
+- **Backend Repository:** [GitHub Link](https://www.google.com/search?q=https://github.com/KUSHANcharuka/Task-Manager)
 
 ## 🌟 Key Features
 
-  * **Secure Authentication:** User registration and login powered by **JSON Web Tokens (JWT)** and password hashing via Bcrypt.
-  * **Full CRUD Functionality:** Create, Read, Update, and Delete tasks with real-time UI updates.
-  * **Dynamic Dashboard:** View tasks in real time.
-  * **Responsive UI:** Fully optimized for mobile, tablet, and desktop views.
-  * **Protected Routes:** Frontend and backend security to ensure only authorized users access their data.
+- **Secure Authentication:** User registration and login powered by **JSON Web Tokens (JWT)** and password hashing via Bcrypt.
+- **Full CRUD Functionality:** Create, Read, Update, and Delete tasks with real-time UI updates.
+- **Dynamic Dashboard:** View tasks in real time.
+- **Responsive UI:** Fully optimized for mobile, tablet, and desktop views.
+- **Protected Routes:** Frontend and backend security to ensure only authorized users access their data.
 
 ## 🚀 Technical Architecture
 
-  * **Frontend:** React.js, Tailwind CSS, Axios
-  * **Backend:** Node.js, Express.js
-  * **Authentication:** JSON Web Tokens (JWT) & Bcrypt password hashing
-  * **Database:** MongoDB Atlas
-  * **Deployment:** Vercel (Full Stack)
-
+- **Frontend:** React.js, Tailwind CSS, Axios
+- **Backend:** Node.js, Express.js
+- **Authentication:** JSON Web Tokens (JWT) & Bcrypt password hashing
+- **Database:** MongoDB Atlas
+- **Deployment:** Vercel (Full Stack)
 
 ## 🛠️ Installation & Setup
 
-1.  **Clone the Repository:**
+- Clone:
 
-    ```bash
-    git clone https://github.com/KUSHANcharuka/Task-Manager.git
-    cd Task-Manager
-    ```
+```bash
+git clone https://github.com/KUSHANcharuka/Task-Manager.git
+cd Task-Manager
+```
 
-2.  **Setup Backend:**
+- Run backend (from `task-manager-backend`):
 
-      * Navigate to `/backend`, run `npm install`.
-      * Create a `.env` file:
-        ```env
-        PORT=5000
-        MONGO_URI=your_mongodb_connection_string
-        JWT_SECRET=your_secret_key
-        ```
-      * Run `npm start`.
+```bash
+cd task-manager-backend
+npm install
+# create .env with MONGO_URI and JWT_SECRET
+node server.js
+```
 
-3.  **Setup Frontend:**
+- Run frontend (from `task-manager-app`):
 
-      * Navigate to `/frontend`, run `npm install`.
-      * Run `npm start`.
+```bash
+cd task-manager-app
+npm install
+npm run dev
+```
 
 ## 📂 Project Structure
 
 ```text
-├── backend/
-│   ├── controllers/   # Business logic for routes
-│   ├── models/        # MongoDB schemas (User, Task)
-│   ├── routes/        # API endpoints
-│   └── middleware/    # Auth & Error handling
-├── frontend/
-│   ├── src/
-│   │   ├── components/ # Reusable UI components
-│   │   ├── pages/      # View layouts (Login, Dashboard)
-│   │   └── context/    # Global state management
-└── README.md
+README.md
+task-manager-app/                  # Frontend (React + Vite)
+  ├── index.html
+  ├── package.json
+  ├── vite.config.js
+  ├── public/
+  └── src/
+     ├── main.jsx
+     ├── index.css
+     ├── App.jsx
+     ├── App.css
+     ├── assets/
+     ├── Components/
+     │  ├── AddTask.jsx
+     │  ├── Calendar.jsx
+     │  ├── Login.jsx
+     │  ├── SignUp.jsx
+     │  ├── TaskManager.jsx
+     │  └── TaskResults.jsx
+     └── config/
+        └── api.js
+
+task-manager-backend/              # Backend (Express + Mongoose)
+  ├── package.json
+  ├── server.js
+  ├── db.js
+  ├── vercel.json
+  ├── middleware/
+  │   └── authMiddleware.js
+  ├── models/
+  │   ├── Task.js
+  │   └── User.js
+  ├── routes/
+  │   ├── auth.js
+  │   └── taskRoutes.js
+  └── task_controller/
+      └── task_control.js
+
 ```
+
+## Notes
+
+- Authentication: JWT + bcrypt (see `task-manager-backend` dependencies).
+- Database: MongoDB (configure `MONGO_URI` in backend `.env`).
+- Frontend: built with React, Vite and Tailwind/vanilla CSS; run with `npm run dev`.
+
 ## 📧 Contact
 
 **K.A. Kushan Charuka Kumarasiri** Computer Science Student @ Saegis Campus  
 [GitHub](https://github.com/KUSHANcharuka) | [LinkedIn](https://www.linkedin.com/in/kushan-charuka/)
 
------
+---
